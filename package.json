@@ -1,0 +1,12 @@
+{
+  "name": "hugsql",
+  "version": "0.1.0",
+  "description": "Node.js library for embracing SQL",
+  "main": "src/index.js",
+  "author": "Camilo Roca",
+  "license": "LGPL-3.0-only",
+  "private": false,
+  "devDependencies": {
+    "mustache": "^3.0.3"
+  }
+}
