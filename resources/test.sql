@@ -13,6 +13,6 @@ select * from customers;
 
 /**
  * @name findAllAlbums
- * @property {String} foo
+ * @property {Number} artistId
  */
-select * from albums;
+select * from albums where "ArtistId" = :artistId;
