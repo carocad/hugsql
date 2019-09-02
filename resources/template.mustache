@@ -1,5 +1,10 @@
+
+const expressions = {
 {{#sections}}
 {{&docstring}}
-const {{name}} = '{{&query}}'
+{{name}}: () => '{{&query}}',
 
 {{/sections}}
+}
+
+module.exports = expressions
