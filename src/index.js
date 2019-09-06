@@ -4,6 +4,7 @@ const Mustache = require('mustache')
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg
 const jsDocFunctionRegex = /@function (\w+)/
+// $ is a valid Javascript identifier
 const jsDocParamRegex = /@param ({\w+} )?(\$?\w+)(.*)/g
 const sqlParamRegex = / (:|@|\$)(\w+)/gi
 
@@ -43,13 +44,13 @@ function difference(s1, s2) {
 /**
  * replaces all named parameters in sqlStatement with ? placeholders
  * @param {String} sqlStatement
- * @return {{query: string, positions: Object}}
+ * @return {{query: string, sortedParameters: Array<String>}}
  */
 function anonymize(sqlStatement) {
     let counter = 0
     const sortedParameters = []
-    const anonymized = sqlStatement.replace(sqlParamRegex, function (match, p1, name) {
-        sortedParameters[counter] = name
+    const anonymized = sqlStatement.replace(sqlParamRegex, function (match, symbol, name) {
+        sortedParameters[counter] = symbol === '$' ? match.trim() : name
         counter = counter + 1
         return ' ?'
     })
@@ -101,7 +102,7 @@ function* parseContent(fileContent) {
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
 
         // normalize input data
-        const {query, sortedParameters} = returnArrays === true ? anonymize(section[2]) : {query: section[2]}
+        const {query, sortedParameters} = returnArrays ? anonymize(section[2]) : {query: section[2]}
 
         yield {
             query,
