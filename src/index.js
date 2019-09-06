@@ -51,7 +51,7 @@ function anonymize(sqlStatement) {
     const anonymized = sqlStatement.replace(sqlParamRegex, function (match, p1, name) {
         sortedParameters[counter] = name
         counter = counter + 1
-        return '?'
+        return ' ?'
     })
     return {
         sortedParameters,
