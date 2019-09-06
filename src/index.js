@@ -15,7 +15,7 @@ const returnArrays = true
  * Returns a lazy sequence of regex executions over text
  * @param {String} text
  * @param {RegExp} regex
- * @return {IterableIterator<Array<String>>}
+ * @yield {IterableIterator<Array<String>>}
  */
 function* allRegexMatches(text, regex) {
     while(true) {
@@ -52,15 +52,15 @@ const argumentRegex = /(:|$|@)(\w+)/gi
  * @return {{query: string, positions: Object}}
  */
 function anonymize(sqlStatement) {
-    let counter = 1
-    const positions = {}
+    let counter = 0
+    const sortedParameters = []
     const anonymized = sqlStatement.replace(argumentRegex, function (match, p1, name) {
-        positions[name] = counter
+        sortedParameters[counter] = name
         counter = counter + 1
         return '?'
     })
     return {
-        positions,
+        sortedParameters,
         query: anonymized,
     }
 }
@@ -79,12 +79,12 @@ function checkParameters(sqlStatement, jsDoc) {
 
     const sqlJsDifference = difference(new Set(sqlParameters), new Set(jsDocParameters))
     if (sqlJsDifference.size !== 0) {
-        throw new Error(`${[...sqlJsDifference]} parameters found in Sql statement:\n${sqlStatement}\n\nbut not in JsDoc section:\n${jsDoc}`)
+        throw new Error(`"${[...sqlJsDifference]}" parameters found in Sql statement:\n\n${sqlStatement}\n\nbut not in JsDoc section:\n${jsDoc}`)
     }
 
     const jsSqlDifference = difference(new Set(jsDocParameters), new Set(sqlParameters))
     if (jsSqlDifference.size !== 0) {
-        throw new Error(`${[...jsSqlDifference]} parameters found in JsDoc section:\n${jsDoc}\n\nbut not in Sql statement:\n${sqlStatement}`)
+        throw new Error(`"${[...jsSqlDifference]}" parameters found in JsDoc section:\n\n${jsDoc}\n\nbut not in Sql statement:\n${sqlStatement}`)
     }
 
     return jsDocParameters
@@ -102,20 +102,21 @@ function* parseContent(fileContent) {
         const [jsDocLine, functionName] = functionBlock
 
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
-        const {query, positions} = returnArrays === true ? anonymize(section[2]) : {query: section[2]}
+        const {query, sortedParameters} = returnArrays === true ? anonymize(section[2]) : {query: section[2]}
 
         yield {
             query,
             functionName,
-            parameters: parameters,
+            parameters,
+            sortedParameters,
             docstring: docstringBlock.replace(jsDocLine, ''),
-            functionParameters: function() { return this.parameters.join(', ') }
+            functionParameters: function() { return this.sortedParameters.join(', ') }
         }
     }
 }
 
 const output = Mustache.render(template, {
-    sections: Array.from(parseContent(SqlExample))
+    sections: [...parseContent(SqlExample)]
 });
 
 fs.writeFileSync(`${__dirname}/../resources/result.js`, output)
