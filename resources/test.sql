@@ -5,8 +5,6 @@
 select * from artists;
 /**
  * @function findAllCustomers
- * @param $customers - a array of customers ids
- * @param $products yet another description
  */
 select * from customers;
 
