@@ -1,10 +1,13 @@
 
-const expressions = {
+const statements = {
 {{#sections}}
 {{&docstring}}
-{{name}}: () => '{{&query}}',
+{{functionName}}: ({{functionParameters}}) => ({
+    query: '{{&query}}',
+    values: { {{functionParameters}} }
+}),
 
 {{/sections}}
 }
 
-module.exports = expressions
+module.exports = statements

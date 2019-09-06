@@ -3,32 +3,50 @@ const fs = require('fs')
 const Mustache = require('mustache')
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg
-const nameRegex = /@name (\w+)/
+const paramsRegex = /@param ({\w+} )?(\S+)(.*)/g
+const functionRegex = /@function (\w+)/
 
 const SqlExample = fs.readFileSync(`${__dirname}/../resources/test.sql`, 'utf8')
 const template = fs.readFileSync(`${__dirname}/../resources/template.mustache`, 'utf8')
 
-function* parseContent(fileContent) {
+function* allRegexMatches(text, regex) {
     while(true) {
-        const section = sectionRegex.exec(fileContent)
+        const section = regex.exec(text)
         if (section === null) {
             return
         }
 
-        const [, docstringBlock, query] = section
-        const nameBlock = nameRegex.exec(docstringBlock)
-        if (nameBlock === null) {
-            throw new Error(`missing @name in docstring section ${docstringBlock}`)
-        }
+        yield [...section]
+    }
+}
 
-        const [match, name] = nameBlock
-        yield { query, name, docstring: docstringBlock.replace(match, '') }
+function* parseContent(fileContent) {
+    for (const section of allRegexMatches(fileContent, sectionRegex)) {
+        const [, docstringBlock, query] = section
+
+        const functionBlock = functionRegex.exec(docstringBlock)
+        if (functionBlock === null) {
+            throw new Error(`missing @function in docstring section ${docstringBlock}`)
+        }
+        const [match, functionName] = functionBlock
+
+        const parameters = [...allRegexMatches(docstringBlock, paramsRegex)]
+            .reduce((result, [text, type, name]) => [...result, name], [])
+
+        yield {
+            query,
+            functionName,
+            parameters,
+            docstring: docstringBlock.replace(match, ''),
+            functionParameters: function() { return this.parameters.join(', ') }
+        }
     }
 }
 
 const output = Mustache.render(template, {
     sections: Array.from(parseContent(SqlExample))
 });
+
 fs.writeFileSync(`${__dirname}/../resources/result.js`, output)
 
 // parse sql into comment and query/function.
