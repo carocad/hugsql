@@ -1,0 +1,13 @@
+
+const statements = {
+{{#sections}}
+{{&docstring}}
+{{functionName}}: ({{parameters}}) => ({
+    query: '{{&query}}',
+    values: { {{parameters}} }
+}),
+
+{{/sections}}
+}
+
+module.exports = statements

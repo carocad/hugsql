@@ -3,13 +3,9 @@ const fs = require('fs')
 const Mustache = require('mustache')
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg
-const paramsRegex = /@param ({\w+} )?(\S+)(.*)/g
-const functionRegex = /@function (\w+)/
-
-const SqlExample = fs.readFileSync(`${__dirname}/../resources/test.sql`, 'utf8')
-const template = fs.readFileSync(`${__dirname}/../resources/template.mustache`, 'utf8')
-
-const returnArrays = true
+const jsDocFunctionRegex = /@function (\w+)/
+const jsDocParamRegex = /@param ({\w+} )?(\$?\w+)(.*)/g
+const sqlParamRegex = / (:|@|\$)(\w+)/gi
 
 /**
  * Returns a lazy sequence of regex executions over text
@@ -44,8 +40,6 @@ function difference(s1, s2) {
     return result
 }
 
-const argumentRegex = /(:|$|@)(\w+)/gi
-
 /**
  * replaces all named parameters in sqlStatement with ? placeholders
  * @param {String} sqlStatement
@@ -54,7 +48,7 @@ const argumentRegex = /(:|$|@)(\w+)/gi
 function anonymize(sqlStatement) {
     let counter = 0
     const sortedParameters = []
-    const anonymized = sqlStatement.replace(argumentRegex, function (match, p1, name) {
+    const anonymized = sqlStatement.replace(sqlParamRegex, function (match, p1, name) {
         sortedParameters[counter] = name
         counter = counter + 1
         return '?'
@@ -72,9 +66,11 @@ function anonymize(sqlStatement) {
  * @return {Array<String>} the names of the parameters (without :$@ symbols)
  */
 function checkParameters(sqlStatement, jsDoc) {
-    const sqlParameters = [...allRegexMatches(sqlStatement, argumentRegex)]
-        .map(([match, symbol, name]) => name)
-    const jsDocParameters = [...allRegexMatches(jsDoc, paramsRegex)]
+    // $ is a valid identifier in Javascript so if we find it accept it as part of the name
+    const sqlParameters = [...allRegexMatches(sqlStatement, sqlParamRegex)]
+        .map(([match, symbol, name]) => symbol === '$' ? match.trim() : name)
+
+    const jsDocParameters = [...allRegexMatches(jsDoc, jsDocParamRegex)]
         .reduce((result, [text, type, name]) => [...result, name], [])
 
     const sqlJsDifference = difference(new Set(sqlParameters), new Set(jsDocParameters))
@@ -95,13 +91,16 @@ function* parseContent(fileContent) {
         const [, docstringBlock, rawSqlStatement] = section
 
         // extract basic info on the current section
-        const functionBlock = functionRegex.exec(docstringBlock)
+        const functionBlock = jsDocFunctionRegex.exec(docstringBlock)
         if (functionBlock === null) {
             throw new Error(`missing @function in docstring section ${docstringBlock}`)
         }
         const [jsDocLine, functionName] = functionBlock
 
+        // did the user forget to annotate anything ?
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
+
+        // normalize input data
         const {query, sortedParameters} = returnArrays === true ? anonymize(section[2]) : {query: section[2]}
 
         yield {
@@ -114,8 +113,14 @@ function* parseContent(fileContent) {
     }
 }
 
-const output = Mustache.render(template, {
-    sections: [...parseContent(SqlExample)]
+const fileContent = fs.readFileSync(`${__dirname}/../resources/test.sql`, 'utf8')
+const arrayTemplate = fs.readFileSync(`${__dirname}/../resources/array.mustache`, 'utf8')
+const objectTemplate = fs.readFileSync(`${__dirname}/../resources/object.mustache`, 'utf8')
+
+const returnArrays = true
+
+const output = Mustache.render(returnArrays === true ? arrayTemplate : objectTemplate, {
+    sections: [...parseContent(fileContent)]
 });
 
 fs.writeFileSync(`${__dirname}/../resources/result.js`, output)
