@@ -110,7 +110,6 @@ function* parseContent(fileContent) {
             parameters,
             sortedParameters,
             docstring: docstringBlock.replace(jsDocLine, ''),
-            functionParameters: function() { return this.sortedParameters.join(', ') }
         }
     }
 }
