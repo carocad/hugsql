@@ -145,5 +145,7 @@ module.exports.compile = function (filepath, options) {
         sections: [...parseContent(fileContent, options)]
     });
 
-    fs.writeFileSync(path.resolve(path.dirname(filepath), path.basename(filepath)), output)
+    const filename = path.basename(filepath, 'sql')
+    const filedir = path.dirname(filepath)
+    fs.writeFileSync(path.join(filedir, `${filename}.sql.js`), output)
 }
