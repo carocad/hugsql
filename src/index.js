@@ -1,6 +1,10 @@
 
 const fs = require('fs')
+const path = require('path')
 const Mustache = require('mustache')
+
+const arrayTemplate = fs.readFileSync(`${__dirname}/../resources/array.mustache`, 'utf8')
+const objectTemplate = fs.readFileSync(`${__dirname}/../resources/object.mustache`, 'utf8')
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg
 const jsDocFunctionRegex = /@function (\w+)/
@@ -87,7 +91,15 @@ function checkParameters(sqlStatement, jsDoc) {
     return jsDocParameters
 }
 
-function* parseContent(fileContent) {
+/**
+ * Parse and check the content of an Sql file with JsDoc annotations. Yields
+ * a sequence of objects that can be used for rendering with mustache
+ * @param {String} fileContent
+ * @param {Object} options
+ * @param {Boolean} options.returnArrays
+ * @yield {functionName: string, sortedParameters: string, docstring: string, query: string, parameters: Array<String>}
+ */
+function* parseContent(fileContent, options) {
     for (const section of allRegexMatches(fileContent, sectionRegex)) {
         const [, docstringBlock, rawSqlStatement] = section
 
@@ -102,7 +114,9 @@ function* parseContent(fileContent) {
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
 
         // normalize input data
-        const {query, sortedParameters} = returnArrays ? anonymize(section[2]) : {query: section[2]}
+        const { query, sortedParameters } = options.returnArrays ? anonymize(rawSqlStatement) : {
+            query: rawSqlStatement
+        }
 
         yield {
             query,
@@ -114,22 +128,22 @@ function* parseContent(fileContent) {
     }
 }
 
-const fileContent = fs.readFileSync(`${__dirname}/../resources/test.sql`, 'utf8')
-const arrayTemplate = fs.readFileSync(`${__dirname}/../resources/array.mustache`, 'utf8')
-const objectTemplate = fs.readFileSync(`${__dirname}/../resources/object.mustache`, 'utf8')
+/**
+ *
+ * @param {String} filepath
+ * @param {Object} options
+ * @param {Boolean} options.returnArrays
+ * @return {void}
+ */
+module.exports.compile = function (filepath, options) {
 
-const returnArrays = true
+    const template = options.returnArrays === true ? arrayTemplate : objectTemplate
 
-const output = Mustache.render(returnArrays === true ? arrayTemplate : objectTemplate, {
-    sections: [...parseContent(fileContent)]
-});
+    const fileContent = fs.readFileSync(filepath, 'utf8')
 
-fs.writeFileSync(`${__dirname}/../resources/result.js`, output)
+    const output = Mustache.render(template, {
+        sections: [...parseContent(fileContent, options)]
+    });
 
-// parse sql into comment and query/function.
-// create constants for each query and attach jsdocs to it
-
-// plan mode -- cli flag ?
-// if no arguments are found then a simple constant would be enough
-// if arguments are found and they are all ? then create a function with {[String, Number, ...]} as argument, returns an PreparedStatement with query and values
-// if arguments are found and they are all :word or @word or $word then create a function with @param {String} word, ... as arguments which returns a PreparedStatement with query and values
+    fs.writeFileSync(path.resolve(path.dirname(filepath), path.basename(filepath)), output)
+}

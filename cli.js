@@ -1,5 +1,23 @@
 #!/usr/bin/env node
 
-const [,, ...args] = process.argv
+const {docopt} = require('docopt')
+const hugsql = require('./src/index')
+const {version, description} = require('./package.json')
+const [,, ...argv] = process.argv
 
-console.log(`hello world ${args}`)
+const docstring = `
+${description}
+
+Usage:
+    hugsql filepath --value-objects
+    hugsql (-h | --help)
+    hugsql --version
+`
+
+const options = docopt(docstring, {
+    version,
+    argv,
+    help: true
+})
+
+console.log(options)
