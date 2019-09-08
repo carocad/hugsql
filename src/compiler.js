@@ -144,7 +144,7 @@ function* parseContent(fileContent, labeled) {
  * @param {String} filepath
  * @param {Boolean} labeled Whether to return arrays or objects in
  *                          generated Js functions
- * @return {void}
+ * @return {String} a Js file with functions containing the Sql statements
  */
 module.exports.compile = function (filepath, labeled) {
 
@@ -152,11 +152,7 @@ module.exports.compile = function (filepath, labeled) {
 
     const fileContent = fs.readFileSync(filepath, 'utf8')
 
-    const output = Mustache.render(template, {
+    return Mustache.render(template, {
         sections: [...parseContent(fileContent, labeled)]
-    });
-
-    const filename = path.basename(filepath, '.sql')
-    const filedir = path.dirname(filepath)
-    fs.writeFileSync(path.join(filedir, `${filename}.sql.js`), output)
+    })
 }

@@ -5,7 +5,7 @@
   "author": "Camilo Roca",
   "license": "LGPL-3.0-only",
   "bin": {
-    "hugsql": "cli.js"
+    "hugsql": "src/cli.js"
   },
   "devDependencies": {
     "docopt": "^0.6.2",

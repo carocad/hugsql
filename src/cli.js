@@ -3,8 +3,8 @@
 const path = require('path')
 const fs = require('fs')
 const {docopt} = require('docopt')
-const hugsql = require('./src/index')
-const {version, description} = require('./package.json')
+const hugsql = require('./compiler')
+const {version, description} = require('../package.json')
 
 /**
  * Synchronously list all files in a directory recursively
@@ -40,16 +40,22 @@ Examples:
     hugsql ./resources --labeled
 `
 
+// parse user arguments
 const options = docopt(docstring, {
     version,
     help: true
 })
 
+// find all files in the provided dir
 const files = recursiveReaddirSync(path.resolve(options['<dirpath>']))
+// compile a js file for each sql file found
 for (const filepath of files) {
     if(path.extname(filepath) === '.sql') {
         try {
-            hugsql.compile(filepath, options['--labeled'])
+            const output = hugsql.compile(filepath, options['--labeled'])
+            const filename = path.basename(filepath, '.sql')
+            const filedir = path.dirname(filepath)
+            fs.writeFileSync(path.join(filedir, `${filename}.sql.js`), output)
         } catch (error) {
             console.error(error.message)
             process.exit(1)
