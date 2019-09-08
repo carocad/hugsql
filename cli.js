@@ -5,7 +5,6 @@ const fs = require('fs')
 const {docopt} = require('docopt')
 const hugsql = require('./src/index')
 const {version, description} = require('./package.json')
-const [,, ...argv] = process.argv
 
 /**
  * Synchronously list all files in a directory recursively
