@@ -80,16 +80,16 @@ function checkParameters(sqlStatement, jsDoc) {
 
     const sqlJsDifference = difference(new Set(sqlParameters), new Set(jsDocParameters))
     if (sqlJsDifference.size !== 0) {
-        throw new Error(`Parsing error. "${[...sqlJsDifference]}" parameters` +
-            `found in Sql statement:\n\n${sqlStatement}\n\nbut not in JsDoc` +
-            `section:\n${jsDoc}`)
+        throw new SyntaxError(`"${[...sqlJsDifference]}" parameters` +
+            ` found in Sql statement:\n\n${sqlStatement}\n\nbut not in JsDoc` +
+            ` section:\n${jsDoc}`)
     }
 
     const jsSqlDifference = difference(new Set(jsDocParameters), new Set(sqlParameters))
     if (jsSqlDifference.size !== 0) {
-        throw new Error(`Parsing error. "${[...jsSqlDifference]}" parameters` +
-            `found in JsDoc section:\n\n${jsDoc}\n\nbut not in Sql` +
-            `statement:\n${sqlStatement}`)
+        throw new SyntaxError(`"${[...jsSqlDifference]}" parameters` +
+            ` found in JsDoc section:\n\n${jsDoc}\n\nbut not in Sql` +
+            ` statement:\n${sqlStatement}`)
     }
 
     return jsDocParameters
@@ -109,8 +109,8 @@ function* parseContent(fileContent, labeled) {
         // extract basic info on the current section
         const functionBlock = jsDocFunctionRegex.exec(docstringBlock)
         if (functionBlock === null) {
-            throw new Error(`Parsing error. Missing @function in docstring` +
-                `section ${docstringBlock}`)
+            throw new SyntaxError(`Missing @function in docstring` +
+                ` section ${docstringBlock}`)
         }
         const [jsDocLine, functionName] = functionBlock
 
@@ -123,7 +123,7 @@ function* parseContent(fileContent, labeled) {
         }
 
         if (labeled === true && parameters.some((param) => !param.startsWith('$'))) {
-            throw new Error(`Error compiling Sql statement. Only '$name' parameters are allowed on --labeled mode.` +
+            throw new SyntaxError(`Only '$name' parameters are allowed on --labeled mode.` +
              `\nPlease rename these parameters: ${parameters} on the statement:\n\n${rawSqlStatement}`)
         }
 
