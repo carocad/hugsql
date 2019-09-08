@@ -28,13 +28,17 @@ const docstring = `
 ${description}
 
 Usage:
-    hugsql <dirpath> [--accept$]
+    hugsql <dirpath> [--labeled]
     hugsql (-h | --help)
     hugsql --version
     
+Options:
+    --labeled  Allows '$name' parameters in Sql. By default hugsql replaces
+               all Sql parameters with '?'.
+    
 Examples:
     hugsql ./resources
-    hugsql ./resources --accept$
+    hugsql ./resources --labeled
 `
 
 const options = docopt(docstring, {
@@ -46,7 +50,7 @@ const files = recursiveReaddirSync(path.resolve(options['<dirpath>']))
 for (const filepath of files) {
     if(path.extname(filepath) === '.sql') {
         try {
-            hugsql.compile(filepath, options)
+            hugsql.compile(filepath, options['--labeled'])
         } catch (error) {
             console.error(error)
             process.exit(1)

@@ -95,10 +95,10 @@ function checkParameters(sqlStatement, jsDoc) {
  * Parse and check the content of an Sql file with JsDoc annotations. Yields
  * a sequence of objects that can be used for rendering with mustache
  * @param {String} fileContent
- * @param {Boolean} accept$
+ * @param {Boolean} labeled
  * @yield {functionName: string, sortedParameters: string, docstring: string, query: string, parameters: Array<String>}
  */
-function* parseContent(fileContent, accept$) {
+function* parseContent(fileContent, labeled) {
     for (const section of allRegexMatches(fileContent, sectionRegex)) {
         const [, docstringBlock, rawSqlStatement] = section
 
@@ -113,7 +113,7 @@ function* parseContent(fileContent, accept$) {
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
 
         // normalize input data
-        const { query, sortedParameters } = accept$ ? anonymize(rawSqlStatement) : {
+        const { query, sortedParameters } = labeled === false ? anonymize(rawSqlStatement) : {
             query: rawSqlStatement
         }
 
@@ -130,17 +130,17 @@ function* parseContent(fileContent, accept$) {
 /**
  *
  * @param {String} filepath
- * @param {Boolean} accept$
+ * @param {Boolean} labeled
  * @return {void}
  */
-module.exports.compile = function (filepath, accept$) {
+module.exports.compile = function (filepath, labeled) {
 
-    const template = accept$ === true ? arrayTemplate : objectTemplate
+    const template = labeled === true ? objectTemplate : arrayTemplate
 
     const fileContent = fs.readFileSync(filepath, 'utf8')
 
     const output = Mustache.render(template, {
-        sections: [...parseContent(fileContent, accept$)]
+        sections: [...parseContent(fileContent, labeled)]
     });
 
     const filename = path.basename(filepath, '.sql')
