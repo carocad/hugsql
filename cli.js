@@ -31,7 +31,10 @@ Usage:
     hugsql <dirpath> [--accept$]
     hugsql (-h | --help)
     hugsql --version
-
+    
+Examples:
+    hugsql ./resources
+    hugsql ./resources --accept$
 `
 
 const options = docopt(docstring, {
