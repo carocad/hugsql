@@ -128,9 +128,12 @@ function* parseContent(fileContent, labeled) {
 }
 
 /**
+ * Parses the concept of filepath and writes a file with the same name
+ * but .sql.js extension out
  *
  * @param {String} filepath
- * @param {Boolean} labeled
+ * @param {Boolean} labeled Whether to return arrays or objects in
+ *                          generated Js functions
  * @return {void}
  */
 module.exports.compile = function (filepath, labeled) {

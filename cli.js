@@ -52,7 +52,7 @@ for (const filepath of files) {
         try {
             hugsql.compile(filepath, options['--labeled'])
         } catch (error) {
-            console.error(error)
+            console.error(error.message)
             process.exit(1)
         }
     }
