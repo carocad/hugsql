@@ -65,7 +65,7 @@ function anonymize(sqlStatement) {
 }
 
 /**
- * Checks that the parameters of the jsDoc section are present in Sql and viceversa
+ * Checks that the parameters of the jsDoc section are present in Sql and vice versa
  * @param {String} sqlStatement
  * @param {String} jsDoc
  * @return {Array<String>} the names of the parameters (without :$@ symbols)
@@ -80,12 +80,16 @@ function checkParameters(sqlStatement, jsDoc) {
 
     const sqlJsDifference = difference(new Set(sqlParameters), new Set(jsDocParameters))
     if (sqlJsDifference.size !== 0) {
-        throw new Error(`"${[...sqlJsDifference]}" parameters found in Sql statement:\n\n${sqlStatement}\n\nbut not in JsDoc section:\n${jsDoc}`)
+        throw new Error(`Parsing error. "${[...sqlJsDifference]}" parameters` +
+            `found in Sql statement:\n\n${sqlStatement}\n\nbut not in JsDoc` +
+            `section:\n${jsDoc}`)
     }
 
     const jsSqlDifference = difference(new Set(jsDocParameters), new Set(sqlParameters))
     if (jsSqlDifference.size !== 0) {
-        throw new Error(`"${[...jsSqlDifference]}" parameters found in JsDoc section:\n\n${jsDoc}\n\nbut not in Sql statement:\n${sqlStatement}`)
+        throw new Error(`Parsing error. "${[...jsSqlDifference]}" parameters` +
+            `found in JsDoc section:\n\n${jsDoc}\n\nbut not in Sql` +
+            `statement:\n${sqlStatement}`)
     }
 
     return jsDocParameters
@@ -105,7 +109,8 @@ function* parseContent(fileContent, labeled) {
         // extract basic info on the current section
         const functionBlock = jsDocFunctionRegex.exec(docstringBlock)
         if (functionBlock === null) {
-            throw new Error(`missing @function in docstring section ${docstringBlock}`)
+            throw new Error(`Parsing error. Missing @function in docstring` +
+                `section ${docstringBlock}`)
         }
         const [jsDocLine, functionName] = functionBlock
 
@@ -115,6 +120,11 @@ function* parseContent(fileContent, labeled) {
         // normalize input data
         const { query, sortedParameters } = labeled === false ? anonymize(rawSqlStatement) : {
             query: rawSqlStatement
+        }
+
+        if (labeled === true && parameters.some((param) => !param.startsWith('$'))) {
+            throw new Error(`Error compiling Sql statement. Only '$name' parameters are allowed on --labeled mode.` +
+             `\nPlease rename these parameters: ${parameters} on the statement:\n\n${rawSqlStatement}`)
         }
 
         yield {
