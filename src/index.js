@@ -95,11 +95,10 @@ function checkParameters(sqlStatement, jsDoc) {
  * Parse and check the content of an Sql file with JsDoc annotations. Yields
  * a sequence of objects that can be used for rendering with mustache
  * @param {String} fileContent
- * @param {Object} options
- * @param {Boolean} options.returnArrays
+ * @param {Boolean} accept$
  * @yield {functionName: string, sortedParameters: string, docstring: string, query: string, parameters: Array<String>}
  */
-function* parseContent(fileContent, options) {
+function* parseContent(fileContent, accept$) {
     for (const section of allRegexMatches(fileContent, sectionRegex)) {
         const [, docstringBlock, rawSqlStatement] = section
 
@@ -114,7 +113,7 @@ function* parseContent(fileContent, options) {
         const parameters = checkParameters(rawSqlStatement, docstringBlock)
 
         // normalize input data
-        const { query, sortedParameters } = options.returnArrays ? anonymize(rawSqlStatement) : {
+        const { query, sortedParameters } = accept$ ? anonymize(rawSqlStatement) : {
             query: rawSqlStatement
         }
 
@@ -131,21 +130,20 @@ function* parseContent(fileContent, options) {
 /**
  *
  * @param {String} filepath
- * @param {Object} options
- * @param {Boolean} options.returnArrays
+ * @param {Boolean} accept$
  * @return {void}
  */
-module.exports.compile = function (filepath, options) {
+module.exports.compile = function (filepath, accept$) {
 
-    const template = options.returnArrays === true ? arrayTemplate : objectTemplate
+    const template = accept$ === true ? arrayTemplate : objectTemplate
 
     const fileContent = fs.readFileSync(filepath, 'utf8')
 
     const output = Mustache.render(template, {
-        sections: [...parseContent(fileContent, options)]
+        sections: [...parseContent(fileContent, accept$)]
     });
 
-    const filename = path.basename(filepath, 'sql')
+    const filename = path.basename(filepath, '.sql')
     const filedir = path.dirname(filepath)
     fs.writeFileSync(path.join(filedir, `${filename}.sql.js`), output)
 }

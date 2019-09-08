@@ -85,3 +85,4 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+*.sql.js
