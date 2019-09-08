@@ -3,8 +3,8 @@ const fs = require('fs')
 const path = require('path')
 const Mustache = require('mustache')
 
-const arrayTemplate = fs.readFileSync(`${__dirname}/../resources/array.mustache`, 'utf8')
-const objectTemplate = fs.readFileSync(`${__dirname}/../resources/object.mustache`, 'utf8')
+const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/nameless.mustache`, 'utf8')
+const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/labeled.mustache`, 'utf8')
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg
 const jsDocFunctionRegex = /@function (\w+)/
@@ -135,7 +135,7 @@ function* parseContent(fileContent, labeled) {
  */
 module.exports.compile = function (filepath, labeled) {
 
-    const template = labeled === true ? objectTemplate : arrayTemplate
+    const template = labeled === true ? labeledTemplate : namelessTemplate
 
     const fileContent = fs.readFileSync(filepath, 'utf8')
 
