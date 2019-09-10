@@ -11,6 +11,8 @@ select * from customers;
 
 
 /**
+ * Fetch all the albums from a specific artist ...
+ * you better pick a good one ;)
  * @function findAllAlbums
  * @param {Number} artistId - an artist id
  * @param {Number} albumId - an album id

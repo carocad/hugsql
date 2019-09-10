@@ -4,6 +4,10 @@
   "description": "Node.js library for embracing SQL",
   "author": "Camilo Roca",
   "homepage": "https://github.com/carocad/hugsql",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carocad/hugsql"
+  },
   "license": "LGPL-3.0-only",
   "bin": {
     "hugsql": "src/cli.js"
