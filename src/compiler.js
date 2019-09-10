@@ -1,6 +1,5 @@
 
 const fs = require('fs')
-const path = require('path')
 const Mustache = require('mustache')
 
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/nameless.mustache`, 'utf8')
