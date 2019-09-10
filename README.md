@@ -63,5 +63,4 @@ npm install --save-dev @carocad/hugsql
 # point it to the directory containing your *.sql files
 npx hugsql resources/
 ```
-- hugsql will create files with the same name but with `*.sql.js` extension
 - Enjoy :)
