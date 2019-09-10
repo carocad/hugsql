@@ -1,13 +1,14 @@
 {
-  "name": "hugsql",
+  "name": "@carocad/hugsql",
   "version": "0.1.0",
   "description": "Node.js library for embracing SQL",
   "author": "Camilo Roca",
+  "homepage": "https://github.com/carocad/hugsql",
   "license": "LGPL-3.0-only",
   "bin": {
     "hugsql": "src/cli.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "docopt": "^0.6.2",
     "mustache": "^3.0.3"
   }
