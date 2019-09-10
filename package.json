@@ -12,6 +12,9 @@
   "bin": {
     "hugsql": "src/cli.js"
   },
+  "scripts": {
+    "test": "eslint src"
+  },
   "dependencies": {
     "docopt": "^0.6.2",
     "mustache": "^3.0.3"
