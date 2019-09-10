@@ -23,7 +23,7 @@ and the one available for Node.js without compromising on quality :)
 Simply document your SQL statements with JsDoc annotations. HugSql will then create
 Javascript functions with the appropriate documentation and parameters; **no magic!**
 
-```sqlite-sql
+```SQL
 /**
  * Fetch all the albums from a specific artist ...
  * you better pick a good one ;)
@@ -55,11 +55,11 @@ module.exports = statements
 ### Usage
 
 - install it
-```bash
+```Shell
 npm install --save-dev @carocad/hugsql
 ```
 - run it on the command line
-```bash
+```Shell
 # point it to the directory containing your *.sql files
 npx hugsql resources/
 ```
