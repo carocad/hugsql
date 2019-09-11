@@ -1,19 +1,26 @@
--- check gtfs reference for further documentation
--- https://developers.google.com/transit/gtfs/reference/#agencytxt
+/**
+ * @private
+ * check gtfs reference for further documentation
+ * https://developers.google.com/transit/gtfs/reference/#agencytxt
 
--- check Sqlite type affinity for more info on automatic type coercion
--- https://www.sqlite.org/draft/datatype3.html
-
+ * check Sqlite type affinity for more info on automatic type coercion
+ * https://www.sqlite.org/draft/datatype3.html
+ */
 pragma foreign_keys=on;
 
 
+/**
+ * @function createLevelsTable
+ */
 create table if not exists levels (
     level_id integer primary key,
     level_index float not null,
     level_name text
 );
 
-
+/**
+ * @function createFeedInfoTable
+ */
 create table feed_info (
   feed_publisher_name text not null,
   feed_publisher_url text not null,
@@ -28,7 +35,9 @@ create table feed_info (
   constraint valid_end_date check (feed_end_date = strftime('%Y%m%d', feed_end_date))
 );
 
-
+/**
+ * @function createCalendarTable
+ */
 create table if not exists calendar (
     service_id integer primary key,
     monday integer not null,
@@ -54,7 +63,9 @@ create table if not exists calendar (
     constraint consistent_dates check (strftime('%Y%m%d', end_date) > strftime('%Y%m%d', start_date) > 0)
 );
 
-
+/**
+ * @function createCalendarDatesTable
+ */
 create table if not exists calendar_dates (
     service_id integer not null references calendar,
     "date" text not null,
@@ -68,7 +79,10 @@ create table if not exists calendar_dates (
 );
 
 
--- https://developers.google.com/transit/gtfs/reference/#agencytxt
+/**
+ * @function createAgencyTable
+ * https://developers.google.com/transit/gtfs/reference/#agencytxt
+ */
 create table if not exists agency (
     -- conditionally required -> default only valid for single agency feed
     agency_id integer primary key default 'default',
@@ -81,7 +95,9 @@ create table if not exists agency (
     agency_email text
 );
 
-
+/**
+ * @function createShapesTable
+ */
 create table if not exists shapes (
   shape_id integer not null,
   shape_pt_lat float not null,
@@ -97,7 +113,9 @@ create table if not exists shapes (
   constraint non_negative_shape_dist_traveled check (shape_dist_traveled > 0)
 );
 
-
+/**
+ * @function createFareAttributesTable
+ */
 create table if not exists fare_attributes (
     fare_id integer primary key,
     price float not null,
@@ -113,7 +131,9 @@ create table if not exists fare_attributes (
     constraint non_negative_transfer_duration check (transfer_duration > 0)
 );
 
-
+/**
+ * @function createRoutesTable
+ */
 create table if not exists routes (
     route_id integer primary key,
     agency_id integer not null references agency,
@@ -132,7 +152,10 @@ create table if not exists routes (
 );
 
 
--- https://developers.google.com/transit/gtfs/reference/#stopstxt
+/**
+ * @function createStopsTable
+ * https://developers.google.com/transit/gtfs/reference/#stopstxt
+ */
 create table if not exists stops (
     stop_id integer primary key,
     stop_code text,
@@ -168,6 +191,10 @@ create table if not exists stops (
     constraint wheelchair_boarding_enum check (wheelchair_boarding in (0, 1, 2))
 );
 
+
+/**
+ * @function createTransfersTable
+ */
 create table if not exists transfers (
   from_stop_id integer not null references stops,
   to_stop_id integer not null references stops,
@@ -180,6 +207,9 @@ create table if not exists transfers (
   constraint non_negative_min_transfer_time check (min_transfer_time > 0)
 );
 
+/**
+ * @function createFareRulesTable
+ */
 create table if not exists fare_rules (
   fare_id integer references fare_attributes,
   route_id integer references routes,
@@ -188,7 +218,9 @@ create table if not exists fare_rules (
   contains_id integer
 );
 
-
+/**
+ * @function createTripsTable
+ */
 create table if not exists trips (
     route_id integer not null references routes,
     service_id integer not null references calendar,
@@ -207,6 +239,9 @@ create table if not exists trips (
 );
 
 
+/**
+ * @function createStopTimesTable
+ */
 create table if not exists stop_times (
     trip_id integer not null references trips,
     arrival_time text,-- can be null/empty .... tricky validation
@@ -232,6 +267,9 @@ create table if not exists stop_times (
 );
 
 
+/**
+ * @function createFrequenciesTable
+ */
 create table if not exists frequencies (
   trip_id integer references trips,
   start_time text not null,
@@ -249,6 +287,9 @@ create table if not exists frequencies (
 );
 
 
+/**
+ * @function createPathwaysTable
+ */
 create table if not exists pathways (
   pathway_id integer not null,
   from_stop_id integer not null references stops,
