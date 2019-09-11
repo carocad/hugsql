@@ -13,7 +13,7 @@
     "hugsql": "src/cli.js"
   },
   "scripts": {
-    "test": "eslint src"
+    "test": "eslint src && node src/cli.js resources"
   },
   "dependencies": {
     "docopt": "^0.6.2",
