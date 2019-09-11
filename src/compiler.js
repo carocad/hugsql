@@ -106,7 +106,11 @@ function checkParameters(sqlStatement, jsDoc) {
  *         parameters: Array<String>}
  */
 function* parseContent(fileContent, labeled) {
-  for (const section of allRegexMatches(fileContent, sectionRegex)) {
+  const allSections = allRegexMatches(fileContent, sectionRegex);
+  // ignore private statements
+  const publicSections = allSections.filter(([, docstringBlock]) => !docstringBlock.includes('@private'));
+
+  for (const section of publicSections) {
     const [, docstringBlock, rawSqlStatement] = section;
 
     // extract basic info on the current section
