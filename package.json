@@ -16,8 +16,8 @@
     "lintCompiler": "eslint src",
     "compileSql": "node src/cli.js resources",
     "lintGeneratedFiles": "eslint resources --fix",
-    "testCoverage": "nyc --reporter=html yarn test",
-    "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles && yarn mocha"
+    "testCoverage": "nyc --reporter=html npm run test",
+    "test": "npm run lintCompiler && npm run compileSql && npm run lintGeneratedFiles && mocha"
   },
   "dependencies": {
     "docopt": "^0.6.2",
