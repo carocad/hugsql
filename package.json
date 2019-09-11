@@ -16,7 +16,7 @@
     "lintCompiler": "eslint src",
     "compileSql": "node src/cli.js resources",
     "lintGeneratedFiles": "eslint resources --fix",
-    "testCoverage": "nyc --reporter=html yarn jest",
+    "testCoverage": "nyc --reporter=html yarn test",
     "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles && yarn jest"
   },
   "dependencies": {
