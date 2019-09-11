@@ -56,7 +56,7 @@ try {
     }
   }
 } catch (error) {
-  // error thrown by docopt or
+  // error thrown by docopt
   if (error instanceof DocoptLanguageError || error instanceof DocoptExit) {
     console.error('Error parsing user arguments. Please check the usage'
             + ` section below and try again.\n\n${docstring}`);

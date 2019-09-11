@@ -1,20 +1,31 @@
 
--- used for a graph representation of the road network
+/**
+ * @function findAllWayNodes
+ * used for a graph representation of the road network
+ */
 select * from way_node join node on way_node.node = node.id;
 
 
+/**
+ * @function findArcConnection
+ */
 select * from arc join node as source on arc.src = source.id
                   join node as destination on arc.dst = destination.id;
 
 
--- src 2708331052, dst 561065
--- "sends a radar beacon to know the distance to the destination"
--- This query is only useful to know the cost of the shortest path
--- until the destination. We can use it to display it to the user
--- and as a way to stop the graph_traversal recursive query below
+/**
+ * @function findDestination
+ * @param {Integer} source the id of the node to start searching from
+ * @param {Integer} destination the id of the node to search for
+ * src 2708331052, dst 561065
+ * "sends a radar beacon to know the distance to the destination"
+ * This query is only useful to know the cost of the shortest path
+ * until the destination. We can use it to display it to the user
+ * and as a way to stop the graph_traversal recursive query below
+ */
 with recursive
  beacon(src, dst, cost) as (
-    values (null, :SOURCE, 0)
+    values (null, :source, 0)
         union all
     select arc.src, arc.dst, round(arc.distance + beacon.cost) as cost
      from beacon
@@ -22,22 +33,28 @@ with recursive
      order by cost
      limit 100000
  )
- select * from beacon where beacon.dst = :DESTINATION limit 1;
+ select * from beacon where beacon.dst = :destination limit 1;
 
 
--- compute the shortest path from source to destination using
--- a plain dijkstra algorithm; done here in several steps due
--- to SQL restrictions
+/**
+ * @function findShortestPath
+ * @param {Integer} source the id of the node to start searching from
+ * @param {Integer} destination the id of the node to search for
+ * @param {Integer} radious the maximum distance to stop searching for 'destination'
+ * compute the shortest path from source to destination using
+ * a plain dijkstra algorithm; done here in several steps due
+ * to SQL restrictions
+ */
 with recursive
  -- traverse the graph until the cost to target is reached. At that point we
  -- would have a big traversal tree with repeated nodes but different weights
  graph_traversal(src, dst, cost) as (
-    values (null, :SOURCE, 0)
+    values (null, :source, 0)
         union all
     select arc.src, arc.dst, round(arc.distance + graph_traversal.cost) as cost
      from graph_traversal
      join arc on arc.src = graph_traversal.dst
-     where round(arc.distance + graph_traversal.cost) <= :RADIOUS
+     where round(arc.distance + graph_traversal.cost) <= :radious
      order by cost
  ),
  -- perform a proper dijkstra by keeping only the nodes from the tree with the
@@ -51,7 +68,7 @@ with recursive
  -- compute the shortest path by backtracking from the destination to the
  -- source
  shortest_path as (
-    select * from dijkstra where dijkstra.dst = :DESTINATION
+    select * from dijkstra where dijkstra.dst = :destination
         union all
     select dijkstra.*
       from shortest_path, dijkstra
