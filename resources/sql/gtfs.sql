@@ -163,7 +163,7 @@ create table if not exists stops (
     stop_desc text not null,
     stop_lat float, -- conditionally required
     stop_lon float, -- conditionally required
-    zone_id integer, -- conditionally required ... todo
+    zone_id integer, -- conditionally required ...
     stop_url text,
     location_type integer default 0,
     parent_station integer references stops,
