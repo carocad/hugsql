@@ -3,7 +3,7 @@ const statements = {
 {{#sections}}
 {{&docstring}}
 {{functionName}}: ({{parameters}}) => ({
-    query: '{{&query}}',
+    query: `{{&query}}`,
     values: { {{parameters}} }
 }),
 

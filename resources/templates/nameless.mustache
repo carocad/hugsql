@@ -3,8 +3,8 @@ const statements = {
 {{#sections}}
 {{&docstring}}
 {{functionName}}: ({{parameters}}) => ({
-    query: '{{&query}}',
-    values: [ {{sortedParameters}} ]
+    query: `{{&query}}`,
+    values: [{{sortedParameters}}]
 }),
 
 {{/sections}}

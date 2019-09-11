@@ -106,41 +106,40 @@ function checkParameters(sqlStatement, jsDoc) {
  *         parameters: Array<String>}
  */
 function* parseContent(fileContent, labeled) {
-  const allSections = allRegexMatches(fileContent, sectionRegex);
-  // ignore private statements
-  const publicSections = allSections.filter(([, docstringBlock]) => !docstringBlock.includes('@private'));
-
-  for (const section of publicSections) {
+  for (const section of allRegexMatches(fileContent, sectionRegex)) {
     const [, docstringBlock, rawSqlStatement] = section;
 
-    // extract basic info on the current section
-    const functionBlock = jsDocFunctionRegex.exec(docstringBlock);
-    if (functionBlock === null) {
-      throw new SyntaxError('Missing @function in docstring'
-                + ` section ${docstringBlock}`);
+    // ignore private statements
+    if (!docstringBlock.includes('@private')) {
+      // extract basic info on the current section
+      const functionBlock = jsDocFunctionRegex.exec(docstringBlock);
+      if (functionBlock === null) {
+        throw new SyntaxError('Missing @function in docstring'
+            + ` section ${docstringBlock}`);
+      }
+      const [jsDocLine, functionName] = functionBlock;
+
+      // did the user forget to annotate anything ?
+      const parameters = checkParameters(rawSqlStatement, docstringBlock);
+
+      // normalize input data
+      const { query, sortedParameters } = labeled === false ? anonymize(rawSqlStatement) : {
+        query: rawSqlStatement,
+      };
+
+      if (labeled === true && parameters.some((param) => !param.startsWith('$'))) {
+        throw new SyntaxError('Only \'$name\' parameters are allowed on --labeled mode.'
+            + `\nPlease rename these parameters: ${parameters} on the statement:\n\n${rawSqlStatement}`);
+      }
+
+      yield {
+        query,
+        functionName,
+        parameters,
+        sortedParameters,
+        docstring: docstringBlock.replace(jsDocLine, ''),
+      };
     }
-    const [jsDocLine, functionName] = functionBlock;
-
-    // did the user forget to annotate anything ?
-    const parameters = checkParameters(rawSqlStatement, docstringBlock);
-
-    // normalize input data
-    const { query, sortedParameters } = labeled === false ? anonymize(rawSqlStatement) : {
-      query: rawSqlStatement,
-    };
-
-    if (labeled === true && parameters.some((param) => !param.startsWith('$'))) {
-      throw new SyntaxError('Only \'$name\' parameters are allowed on --labeled mode.'
-             + `\nPlease rename these parameters: ${parameters} on the statement:\n\n${rawSqlStatement}`);
-    }
-
-    yield {
-      query,
-      functionName,
-      parameters,
-      sortedParameters,
-      docstring: docstringBlock.replace(jsDocLine, ''),
-    };
   }
 }
 
