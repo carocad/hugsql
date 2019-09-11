@@ -13,7 +13,10 @@
     "hugsql": "src/cli.js"
   },
   "scripts": {
-    "test": "eslint src && node src/cli.js resources"
+    "lintCompiler": "eslint src",
+    "compileSql": "node src/cli.js resources",
+    "lintGeneratedFiles": "eslint resources --fix",
+    "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles"
   },
   "dependencies": {
     "docopt": "^0.6.2",
