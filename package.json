@@ -16,6 +16,7 @@
     "lintCompiler": "eslint src",
     "compileSql": "node src/cli.js resources",
     "lintGeneratedFiles": "eslint resources --fix",
+    "testCoverage": "nyc test",
     "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles"
   },
   "dependencies": {
@@ -25,7 +26,8 @@
   "devDependencies": {
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "nyc": "^14.1.1"
   },
   "engines": {
     "node": ">=8"
