@@ -2,8 +2,8 @@
 const fs = require('fs');
 const Mustache = require('mustache');
 
-const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/nameless.mustache`, 'utf8');
-const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/labeled.mustache`, 'utf8');
+const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
+const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/templates/labeled.mustache`, 'utf8');
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg;
 const jsDocFunctionRegex = /@function (\w+)/;
