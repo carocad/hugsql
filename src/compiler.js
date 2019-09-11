@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 const Mustache = require('mustache');
+const { difference, allRegexMatches } = require('./util');
 
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
 const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/templates/labeled.mustache`, 'utf8');
@@ -11,38 +12,6 @@ const jsDocFunctionRegex = /@function (\w+)/;
 const jsDocParamRegex = /@param ({\w+} )?(\$?\w+)(.*)/g;
 const sqlParamRegex = / (:|@|\$)(\w+)/gi;
 
-/**
- * Returns a lazy sequence of regex executions over text
- * @param {String} text
- * @param {RegExp} regex
- * @yield {IterableIterator<Array<String>>}
- */
-function* allRegexMatches(text, regex) {
-  while (true) {
-    const section = regex.exec(text);
-    if (section === null) {
-      return;
-    }
-
-    yield [...section];
-  }
-}
-
-/**
- * return the Set s1 without the elements from Set s2
- * @param {Set<*>} s1
- * @param {Set<*>} s2
- * @return {Set<*>}
- */
-function difference(s1, s2) {
-  const result = new Set();
-  for (const value of s1) {
-    if (!s2.has(value)) {
-      result.add(value);
-    }
-  }
-  return result;
-}
 
 /**
  * replaces all named parameters in sqlStatement with ? placeholders

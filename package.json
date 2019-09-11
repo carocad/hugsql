@@ -16,8 +16,8 @@
     "lintCompiler": "eslint src",
     "compileSql": "node src/cli.js resources",
     "lintGeneratedFiles": "eslint resources --fix",
-    "testCoverage": "nyc test",
-    "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles"
+    "testCoverage": "nyc --reporter=html yarn jest",
+    "test": "yarn lintCompiler && yarn compileSql && yarn lintGeneratedFiles && yarn jest"
   },
   "dependencies": {
     "docopt": "^0.6.2",
@@ -27,6 +27,7 @@
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0",
     "nyc": "^14.1.1"
   },
   "engines": {

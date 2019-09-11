@@ -3,22 +3,9 @@
 const path = require('path');
 const fs = require('fs');
 const { docopt, DocoptLanguageError, DocoptExit } = require('docopt');
+const { recursiveReaddirSync } = require('./util');
 const hugsql = require('./compiler');
 const { version, description } = require('../package.json');
-
-/**
- * Synchronously list all files in a directory recursively
- * @param {String} dir a fullpath directory
- */
-function* recursiveReaddirSync(dir) {
-  for (const child of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (child.isDirectory()) {
-      yield* recursiveReaddirSync(path.resolve(dir, child.name));
-    } else { // file otherwise
-      yield path.resolve(dir, child.name);
-    }
-  }
-}
 
 const docstring = `
 ${description}
