@@ -6,7 +6,7 @@ const { difference, allRegexMatches } = require('./util');
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
 const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/templates/labeled.mustache`, 'utf8');
 
-const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?;)/isg;
+const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?)(?=(\/\*)|$)/sg;
 const jsDocFunctionRegex = /@function (\w+)/;
 // $ is a valid Javascript identifier
 const jsDocParamRegex = /@param ({\w+} )?(\$?\w+)(.*)/g;
@@ -102,10 +102,10 @@ function* parseContent(fileContent, labeled) {
       }
 
       yield {
-        query,
         functionName,
         parameters,
         sortedParameters,
+        query: query.trim(),
         docstring: docstringBlock.replace(jsDocLine, ''),
       };
     }

@@ -15,8 +15,8 @@ select * from arc join node as source on arc.src = source.id
 
 /**
  * @function findDestination
- * @param {Integer} source the id of the node to start searching from
- * @param {Integer} destination the id of the node to search for
+ * @param {Number} source the id of the node to start searching from
+ * @param {Number} destination the id of the node to search for
  * src 2708331052, dst 561065
  * "sends a radar beacon to know the distance to the destination"
  * This query is only useful to know the cost of the shortest path
@@ -38,9 +38,9 @@ with recursive
 
 /**
  * @function findShortestPath
- * @param {Integer} source the id of the node to start searching from
- * @param {Integer} destination the id of the node to search for
- * @param {Integer} radious the maximum distance to stop searching for 'destination'
+ * @param {Number} source the id of the node to start searching from
+ * @param {Number} destination the id of the node to search for
+ * @param {Number} radious the maximum distance to stop searching for 'destination'
  * compute the shortest path from source to destination using
  * a plain dijkstra algorithm; done here in several steps due
  * to SQL restrictions
