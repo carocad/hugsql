@@ -47,7 +47,7 @@ const statements = {
      */
     findAllAlbums: (artistId,albumId) => ({
         query: 'select * from albums where "AlbumId" = ? and "ArtistId" = ?;',
-        values: [ albumId,artistId ]
+        parameters: [ albumId,artistId ]
     })
 }
 
