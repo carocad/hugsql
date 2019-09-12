@@ -13,11 +13,8 @@
     "hugsql": "src/cli.js"
   },
   "scripts": {
-    "lintCompiler": "eslint src",
-    "compileSql": "node src/cli.js resources",
-    "lintGeneratedFiles": "eslint resources --fix",
-    "testCoverage": "nyc --reporter=html npm run test",
-    "test": "npm run lintCompiler && npm run compileSql && npm run lintGeneratedFiles && mocha"
+    "lint": "eslint .",
+    "test": "yarn run lint && jest --collectCoverage"
   },
   "dependencies": {
     "docopt": "^0.6.2",
@@ -27,8 +24,7 @@
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1"
+    "jest": "^24.9.0"
   },
   "engines": {
     "node": ">=10.10"
