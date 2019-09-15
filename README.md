@@ -3,6 +3,7 @@
 Node.js library for embracing SQL.
 
 [![Build Status](https://travis-ci.com/carocad/hugsql.svg?branch=master)](https://travis-ci.com/carocad/hugsql)
+[![npm version](https://badge.fury.io/js/%40carocad%2Fhugsql.svg)](https://badge.fury.io/js/%40carocad%2Fhugsql)
 
 HugSql is my own adaptation of the wonderful [HugSql](https://github.com/layerware/hugsql)
 library for Clojure.
