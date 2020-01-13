@@ -28,10 +28,8 @@ and the one available for Node.js without compromising on quality :)
 npm install --save-dev @carocad/hugsql
 ```
 
-Document your SQL statements with JsDoc annotations. HugSql will then create
-Javascript functions with the appropriate documentation and parameters.
-
-- for example on `src/example.sql` file
+- Document your SQL statements with JsDoc annotations. HugSql will then create
+Javascript functions with the appropriate documentation and parameters. For example on `src/example.sql` file
 ```SQL
 /**
  * Fetch all the albums from a specific artist ...
