@@ -81,3 +81,5 @@ connection.query(MyFavouriteSongs.query, myFavouriteSongs.parameters, function (
 ```
 
 - Enjoy :)
+
+For more examples, check the [resources/sql](./resources/sql) directory
