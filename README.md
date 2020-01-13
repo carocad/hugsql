@@ -21,19 +21,6 @@ just use plain Sql statements and enjoy the benefits of *What You See Is What Yo
 As an added benefit you can directly use all the tooling available for your Sql dialect
 and the one available for Node.js without compromising on quality :) 
 
-### Usage
-
-- install it
-```Shell
-npm install --save-dev @carocad/hugsql
-```
-- run it on the command line
-```Shell
-# point it to the directory containing your *.sql files
-npx hugsql resources/
-```
-- Enjoy :)
-
 ### Example
 
 Simply document your SQL statements with JsDoc annotations. HugSql will then create
@@ -90,3 +77,16 @@ connection.query(MyFavouriteSongs.query, myFavouriteSongs.parameters, function (
   console.log('Here we kum: ', results);
 })
 ```
+
+### Usage
+
+- install it
+```Shell
+npm install --save-dev @carocad/hugsql
+```
+- run it on the command line
+```Shell
+# point it to the directory containing your *.sql files
+npx hugsql resources/
+```
+- Enjoy :)
