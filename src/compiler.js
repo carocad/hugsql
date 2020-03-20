@@ -3,7 +3,7 @@ const fs = require('fs');
 const handlebars = require('handlebars');
 const { difference, allRegexMatches } = require('./util');
 
-const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
+const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.handlebars`, 'utf8');
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?)(?=(\/\*)|$)/sg;
 const jsDocFunctionRegex = /@function (\w+)/;
