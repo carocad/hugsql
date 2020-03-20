@@ -1,6 +1,6 @@
 {
   "name": "@carocad/hugsql",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Node.js library for embracing SQL",
   "author": "Camilo Roca",
   "homepage": "https://github.com/carocad/hugsql",
