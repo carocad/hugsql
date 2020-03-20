@@ -4,7 +4,6 @@ const handlebars = require('handlebars');
 const { difference, allRegexMatches } = require('./util');
 
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
-const labeledTemplate = fs.readFileSync(`${__dirname}/../resources/templates/labeled.mustache`, 'utf8');
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?)(?=(\/\*)|$)/sg;
 const jsDocFunctionRegex = /@function (\w+)/;
@@ -94,6 +93,7 @@ function* parseContent(fileContent, labeled) {
       // normalize input data
       const { query, sortedParameters } = labeled === false ? anonymize(rawSqlStatement) : {
         query: rawSqlStatement,
+        sortedParameters: parameters,
       };
 
       if (labeled === true && parameters.some((param) => !param.startsWith('$'))) {
@@ -122,8 +122,7 @@ function* parseContent(fileContent, labeled) {
  * @return {String} a Js file with functions containing the Sql statements
  */
 module.exports.compile = function compile(filepath, labeled) {
-  const templateType = labeled === true ? labeledTemplate : namelessTemplate;
-  const template = handlebars.compile(templateType);
+  const template = handlebars.compile(namelessTemplate);
   const fileContent = fs.readFileSync(filepath, 'utf8');
 
   return template({
