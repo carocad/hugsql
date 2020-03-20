@@ -1,6 +1,6 @@
 
 const fs = require('fs');
-const Mustache = require('mustache');
+const handlebars = require('handlebars');
 const { difference, allRegexMatches } = require('./util');
 
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.mustache`, 'utf8');
@@ -122,11 +122,11 @@ function* parseContent(fileContent, labeled) {
  * @return {String} a Js file with functions containing the Sql statements
  */
 module.exports.compile = function compile(filepath, labeled) {
-  const template = labeled === true ? labeledTemplate : namelessTemplate;
-
+  const templateType = labeled === true ? labeledTemplate : namelessTemplate;
+  const template = handlebars.compile(templateType);
   const fileContent = fs.readFileSync(filepath, 'utf8');
 
-  return Mustache.render(template, {
+  return template({
     sections: [...parseContent(fileContent, labeled)],
   });
 };

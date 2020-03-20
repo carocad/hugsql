@@ -13,7 +13,7 @@
     "hugsql": "src/cli.js"
   },
   "scripts": {
-    "test": "npx eslint , && jest --collectCoverage"
+    "test": "npx eslint . && jest --collectCoverage"
   },
   "dependencies": {
     "docopt": "^0.6.2",
