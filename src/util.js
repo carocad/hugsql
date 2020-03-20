@@ -39,14 +39,19 @@ function difference(s1, s2) {
 
 /**
  * Synchronously list all files in a directory recursively
- * @param {String} dir a fullpath directory
+ * @param {String} pathlike to the sql target
  */
-function* recursiveReaddirSync(dir) {
-  for (const child of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (child.isDirectory()) {
-      yield* recursiveReaddirSync(path.resolve(dir, child.name));
-    } else { // file otherwise
-      yield path.resolve(dir, child.name);
+function* recursiveReaddirSync(pathlike) {
+  const stat = fs.lstatSync(pathlike);
+  if (stat.isFile()) {
+    yield pathlike;
+  } else {
+    for (const child of fs.readdirSync(pathlike, { withFileTypes: true })) {
+      if (child.isDirectory()) {
+        yield* recursiveReaddirSync(path.resolve(pathlike, child.name));
+      } else { // file otherwise
+        yield path.resolve(pathlike, child.name);
+      }
     }
   }
 }
