@@ -9,7 +9,7 @@ const eslintrc = fs.readFileSync(`${__dirname}/../.eslintrc`, 'utf-8');
 const config = JSON.parse(eslintrc);
 
 
-for (const filepath of recursiveReaddirSync(`${__dirname}/../resources/`)) {
+for (const filepath of recursiveReaddirSync(`${__dirname}/sql/`)) {
   const linter = new Linter();
   const cli = new CLIEngine(config);
 
