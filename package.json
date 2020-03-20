@@ -13,12 +13,11 @@
     "hugsql": "src/cli.js"
   },
   "scripts": {
-    "lint": "eslint .",
-    "test": "yarn run lint && jest --collectCoverage"
+    "test": "npx eslint , && jest --collectCoverage"
   },
   "dependencies": {
     "docopt": "^0.6.2",
-    "mustache": "^3.0.3"
+    "handlebars": "^4.7.3"
   },
   "devDependencies": {
     "eslint": "^6.3.0",
