@@ -82,4 +82,5 @@ connection.query(MyFavouriteSongs.query, myFavouriteSongs.parameters, function (
 
 - Enjoy :)
 
-For more examples, check the [resources/sql](./resources/sql) directory
+For more examples, check the [example queries](./test/sql) used to test
+hugsql
