@@ -11,7 +11,7 @@ const docstring = `
 ${description}
 
 Usage:
-    hugsql <dirpath> [--labeled]
+    hugsql <path> [--labeled]
     hugsql (-h | --help)
     hugsql --version
     
@@ -32,7 +32,7 @@ try {
     exit: false,
   });
   // find all files in the provided dir
-  const files = recursiveReaddirSync(path.resolve(options['<dirpath>']));
+  const files = recursiveReaddirSync(path.resolve(options['<path>']));
   // compile a js file for each sql file found
   for (const filepath of files) {
     if (path.extname(filepath) === '.sql') {
