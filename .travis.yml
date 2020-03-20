@@ -7,7 +7,7 @@ jobs:
     - stage: Tests
       script:
         - npm test
-        - npx semantic-release --dry-run --generate-notes
+        #- npx semantic-release --dry-run --generate-notes
 
     - stage: release
       if: branch = master
