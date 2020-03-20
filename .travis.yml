@@ -6,7 +6,7 @@ jobs:
   include:
     - stage: Tests
       script:
-        - yarn test
+        - npm test
 
 #    - stage: Release
 #      if: tag IS present

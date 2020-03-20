@@ -8,7 +8,10 @@ const { recursiveReaddirSync } = require('../src/util');
 const eslintrc = fs.readFileSync(`${__dirname}/../.eslintrc`, 'utf-8');
 const config = JSON.parse(eslintrc);
 
-
+/**
+ * compile all sql files found in the test/sql directory and validate them
+ * with EsLint
+ */
 for (const filepath of recursiveReaddirSync(`${__dirname}/sql/`)) {
   const linter = new Linter();
   const cli = new CLIEngine(config);

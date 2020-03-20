@@ -113,7 +113,7 @@ function* parseContent(fileContent, labeled) {
 }
 
 /**
- * Parses the concept of filepath and writes a file with the same name
+ * Parses a filepath and writes a file with the same name
  * but .sql.js extension out
  *
  * @param {String} filepath
