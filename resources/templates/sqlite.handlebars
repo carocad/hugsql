@@ -23,6 +23,11 @@ function SqlStream(conn, query, parameters) {
   return sink;
 }
 
+/**
+ * Hooks on a Sqlite3 database connection for future
+ * query executions
+ * @param {sqlite3.Database} db
+ */
 module.exports = (db) => ({
 {{#sections}}
 {{&docstring}}
