@@ -117,8 +117,8 @@ function* parseContent(fileContent, labeled) {
 }
 
 /**
- * Parses a filepath and writes a file with the same name
- * but .sql.js extension out
+ * Parses an SQL file and returns Js file content with the necessary API
+ * for the target database
  *
  * @param {String} filepath
  * @param {Boolean} labeled Whether to return arrays or objects in
