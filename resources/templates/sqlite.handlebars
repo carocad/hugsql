@@ -4,6 +4,24 @@
  */
 
 const util = require('util');
+// TODO: import only if needed
+const stream = require('stream');
+
+function SqlStream(conn, query, parameters) {
+  // https://2ality.com/2018/04/async-iter-nodejs.html#reading-asynchronously-via-async-iteration
+  const sink = new stream.Readable({
+    objectMode: true,
+  });
+  // https://nodejs.org/api/stream.html#stream_readable_read_size_1
+  // eslint-disable-next-line no-underscore-dangle
+  sink._read = () => {
+    conn.each(query, parameters,
+      (error, row) => sink.push(row),
+      () => sink.push(null));
+  };
+  // use as `for await (const row of SqlStream(...)) { ... }`
+  return sink;
+}
 
 module.exports = (db) => ({
 {{#sections}}
