@@ -8,7 +8,15 @@ select * from artists;
  */
 select * from customers;
 
+/**
+ @function insertCalle13
+ */
+insert into artists values (0, 'calle 13');
 
+/**
+ @function removeCalle13
+ */
+delete from artists where artists.ArtistId = 0;
 
 /**
  * Fetch all the albums from a specific artist ...

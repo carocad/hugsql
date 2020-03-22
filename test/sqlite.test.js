@@ -7,3 +7,7 @@ const statements = require('./sql/chinook.sql.js')(db);
 statements.findAllArtists()
   .then(console.log)
   .catch(console.error);
+
+statements.insertCalle13()
+  .then(console.log)
+  .catch(console.error);
