@@ -3,6 +3,10 @@ const fs = require('fs');
 const handlebars = require('handlebars');
 const { difference, allRegexMatches } = require('./util');
 
+/*
+const sqliteTemplatePath = `${__dirname}/../resources/templates/sqlite.handlebars`;
+const sqliteTemplate = fs.readFileSync(sqliteTemplatePath, 'utf8');
+*/
 const namelessTemplate = fs.readFileSync(`${__dirname}/../resources/templates/nameless.handlebars`, 'utf8');
 
 const sectionRegex = /(\/\*\*.*?\*\/)\n*(.*?)(?=(\/\*)|$)/sg;
@@ -127,5 +131,6 @@ module.exports.compile = function compile(filepath, labeled) {
 
   return template({
     sections: [...parseContent(fileContent, labeled)],
+    date: new Date().toUTCString(),
   });
 };
